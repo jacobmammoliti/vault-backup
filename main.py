@@ -6,8 +6,21 @@ try:
 except ImportError:
     print ("hvac library is needed. Run pip install hvac.")
 
+try:
+    vault_token = os.environ['VAULT_TOKEN']
+except KeyError:
+    print ("VAULT_TOKEN not set.. Goodbye!")
+    raise SystemExit
+
+try:
+    vault_url = os.environ['VAULT_URL']
+except KeyError:
+    print ("VAULT_URL not set.. Goodbye!")
+    raise SystemExit
+
 hvac_client = {
-    'url': os.environ['VAULT_ADDR'],
+    'url': vault_url,
+    'token': vault_token
 }
 
 client = hvac.Client(**hvac_client)
@@ -43,16 +56,14 @@ def recurse_through_secrets(path_prefix, candidate_key):
 
             print ()
 
-try: 
-    github_token = os.environ['GITHUB_PAT']
 
-    login_response = client.auth.github.login(token=github_token)
-except KeyError:
-    github_token = input("Vault Token: ")
+def main():
+    assert client.is_authenticated()
 
-assert client.is_authenticated()
+    top_level_keys = client.secrets.kv.v2.list_secrets(path='', mount_point='arctiq')
+    top_vault_prefix = ''
 
-top_level_keys = client.secrets.kv.v2.list_secrets(path='', mount_point='arctiq')
-top_vault_prefix = ''
+    recurse_through_secrets(top_vault_prefix, top_level_keys)
 
-recurse_through_secrets(top_vault_prefix, top_level_keys)
+if __name__ == '__main__':
+    main()
