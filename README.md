@@ -1,6 +1,6 @@
 # vault-backup
 
-Export secrets from HashiCorp Vault to a file. This script will output the appropriate `vault kv put` commands to restore secrets on a different Vault instance.
+Export KV2 secrets from HashiCorp Vault to a file. This script will output the appropriate `vault kv put` commands to restore secrets on a different Vault instance.
 
 ## Environment Variables
 
