@@ -34,6 +34,7 @@ The script using the following environment variables:
 ```
 
 ### Import into new Vault
+> **Note:** The Secrets Engine you exported must be created prior to running the Vault import. 
 ```bash
 ~] export VAULT_ADDR='https://new-vault.arctiq.ca'
 ~] vault login
