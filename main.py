@@ -44,7 +44,7 @@ def recurse_through_secrets(path_prefix, candidate_key, mount_point):
 
         # if the entry ends with a '/', we know its a folder, so list out all entries
         # in this path and then use recursion to run this function against that entry
-        if candidate_value.endswith('/') and candidate_value != 'users/':
+        if candidate_value.endswith('/'):
 
             next_value = client.secrets.kv.v2.list_secrets(path=next_index, \
                                                            mount_point=mount_point)
@@ -53,7 +53,7 @@ def recurse_through_secrets(path_prefix, candidate_key, mount_point):
 
         # if it doesn't end with a '/', we know its a secret so
         # we can read the data and print out the secrets safely
-        elif candidate_value != 'users/':
+        else:
             final_value = client.read(mount_point + '/data/' + next_index)['data']['data']
 
             print ("\nvault kv put {0}/{1}".format(mount_point, next_index), end='')
@@ -64,7 +64,7 @@ def recurse_through_secrets(path_prefix, candidate_key, mount_point):
                 final_value = final_value
 
             for secret in final_value:
-               print (' "{0}={1}"'.format(secret, final_value[secret]), end='')
+               print (" '{0}={1}'".format(secret, final_value[secret]), end='')
 
             print ()
 

@@ -23,11 +23,19 @@ The script using the following environment variables:
 
 ## Example Usuage
 
+### Export out of Vault
 ```bash
 ~] export VAULT_ADDR='https://vault.arctiq.ca'
 ~] export GITHUB_PAT=[redacted]
 ~] vault login -method=github token=${GITHUB_PAT}
 ~] export VAULT_TOKEN="$(cat ~/.vault-token)"
 ~] export VAULT_MOUNT_POINT = 'arctiq'
-~] python main.py
+~] python main.py >> output.txt
+```
+
+### Import into new Vault
+```bash
+~] export VAULT_ADDR='https://new-vault.arctiq.ca'
+~] vault login
+~] . output.txt
 ```
