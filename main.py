@@ -25,7 +25,6 @@ hvac_client = {
 
 client = hvac.Client(**hvac_client)
 
-
 def recurse_through_secrets(path_prefix, candidate_key, mount_point):
     """Use recursion to traverse through the secrets paths to retrieve secrets.
 
@@ -45,7 +44,7 @@ def recurse_through_secrets(path_prefix, candidate_key, mount_point):
 
         # if the entry ends with a '/', we know its a folder, so list out all entries
         # in this path and then use recursion to run this function against that entry
-        if candidate_value.endswith('/'):
+        if candidate_value.endswith('/') and candidate_value != 'users/':
 
             next_value = client.secrets.kv.v2.list_secrets(path=next_index, \
                                                            mount_point=mount_point)
@@ -54,7 +53,7 @@ def recurse_through_secrets(path_prefix, candidate_key, mount_point):
 
         # if it doesn't end with a '/', we know its a secret so
         # we can read the data and print out the secrets safely
-        else:
+        elif candidate_value != 'users/':
             final_value = client.read(mount_point + '/data/' + next_index)['data']['data']
 
             print ("\nvault kv put {0}/{1}".format(mount_point, next_index), end='')
