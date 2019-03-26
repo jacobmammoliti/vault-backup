@@ -29,7 +29,7 @@ The script using the following environment variables:
 ~] export GITHUB_PAT=[redacted]
 ~] vault login -method=github token=${GITHUB_PAT}
 ~] export VAULT_TOKEN="$(cat ~/.vault-token)"
-~] export VAULT_MOUNT_POINT = 'arctiq'
+~] export VAULT_MOUNT_POINT='arctiq'
 ~] python main.py >> output.txt
 ```
 
