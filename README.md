@@ -13,7 +13,7 @@ The script using the following environment variables:
 | VAULT_MOUNT_POINT  | no (default: secrets) | name of kv secrets engine |
 
 
-## Preping Python Environment
+## Prepping Python Environment
 
 ```bash
 ~] virutalenv -p python3 venv
@@ -21,7 +21,7 @@ The script using the following environment variables:
 ~] pip install -r requirements.txt
 ```
 
-## Example Usuage
+## Example Usage
 
 ### Export out of Vault
 ```bash
