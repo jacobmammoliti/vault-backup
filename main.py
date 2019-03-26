@@ -25,6 +25,9 @@ hvac_client = {
 
 client = hvac.Client(**hvac_client)
 
+failed_exports = []
+f = open("output.txt", "w")
+
 def recurse_through_secrets(path_prefix, candidate_key, mount_point):
     """Use recursion to traverse through the secrets paths to retrieve secrets.
 
@@ -44,29 +47,33 @@ def recurse_through_secrets(path_prefix, candidate_key, mount_point):
 
         # if the entry ends with a '/', we know its a folder, so list out all entries
         # in this path and then use recursion to run this function against that entry
-        if candidate_value.endswith('/'):
 
-            next_value = client.secrets.kv.v2.list_secrets(path=next_index, \
-                                                           mount_point=mount_point)
+        try:
+            if candidate_value.endswith('/'):
 
-            recurse_through_secrets(next_index, next_value, mount_point)
+                next_value = client.secrets.kv.v2.list_secrets(path=next_index, \
+                                                               mount_point=mount_point)
 
-        # if it doesn't end with a '/', we know its a secret so
-        # we can read the data and print out the secrets safely
-        else:
-            final_value = client.read(mount_point + '/data/' + next_index)['data']['data']
+                recurse_through_secrets(next_index, next_value, mount_point)
 
-            print ("\nvault kv put {0}/{1}".format(mount_point, next_index), end='')
-            
-            try:
-                final_value = final_value.encode("utf-8")
-            except AttributeError:
-                final_value = final_value
+            # if it doesn't end with a '/', we know its a secret so
+            # we can read the data and print out the secrets safely
+            else:
+                final_value = client.read(mount_point + '/data/' + next_index)['data']['data']
 
-            for secret in final_value:
-               print (" '{0}={1}'".format(secret, final_value[secret]), end='')
+                f.write("\nvault kv put {0}/{1}".format(mount_point, next_index))
+                
+                try:
+                    final_value = final_value.encode("utf-8")
+                except AttributeError:
+                    final_value = final_value
 
-            print ()
+                for secret in final_value:
+                   f.write(" '{0}={1}'".format(secret, final_value[secret]))
+
+                f.write("\n")
+        except:
+            failed_exports.append(path_prefix + candidate_value)
 
 def main():
     assert client.is_authenticated()
@@ -79,6 +86,12 @@ def main():
     top_vault_prefix = ''
 
     recurse_through_secrets(top_vault_prefix, top_level_keys, mount_point)
+
+    if failed_exports:
+        print ("Exporting failed on the following, most likely due to permission issues: ")
+
+        for failed in failed_exports:
+            print (failed)
 
 if __name__ == '__main__':
     main()

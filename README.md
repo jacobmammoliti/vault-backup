@@ -30,7 +30,7 @@ The script using the following environment variables:
 ~] vault login -method=github token=${GITHUB_PAT}
 ~] export VAULT_TOKEN="$(cat ~/.vault-token)"
 ~] export VAULT_MOUNT_POINT='arctiq'
-~] python main.py >> output.txt
+~] python main.py
 ```
 
 ### Import into new Vault
