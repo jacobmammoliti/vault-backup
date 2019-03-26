@@ -1,6 +1,6 @@
 # vault-backup
 
-Export KV2 secrets from HashiCorp Vault to a file. This script will output the appropriate `vault kv put` commands to restore secrets on a different Vault instance.
+Export KV2 secrets from HashiCorp Vault to a file. This script will output the appropriate `vault kv put` commands to restore secrets on a different Vault instance. Plan to add more features. 
 
 ## Environment Variables
 
@@ -25,7 +25,7 @@ The script using the following environment variables:
 
 ### Export out of Vault
 ```bash
-~] export VAULT_ADDR='https://vault.arctiq.ca'
+~] export VAULT_ADDR='https://vault.domain.local'
 ~] export GITHUB_PAT=[redacted]
 ~] vault login -method=github token=${GITHUB_PAT}
 ~] export VAULT_TOKEN="$(cat ~/.vault-token)"
@@ -36,7 +36,7 @@ The script using the following environment variables:
 ### Import into new Vault
 > **Note:** The Secrets Engine you exported must be created prior to running the Vault import. 
 ```bash
-~] export VAULT_ADDR='https://new-vault.arctiq.ca'
+~] export VAULT_ADDR='https://new-vault.domain.local'
 ~] vault login
 ~] . output.txt
 ```
